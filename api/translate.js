@@ -1,18 +1,18 @@
-// Vercel Serverless Function for Translation
-import * as gTranslate from '@vitalets/google-translate-api';
+const translate = require('@vitalets/google-translate-api');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   const { text = '', lang = 'en' } = req.query;
 
   if (!text) {
-    return res.status(400).send('⚠️ Please provide text to translate.');
+    res.status(400).send('⚠️ Please provide text to translate.');
+    return;
   }
 
   try {
-    const result = await gTranslate.default(text, { to: lang });
+    const result = await translate(text, { to: lang });
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.status(200).send(result.text);
+    res.status(200).send(result.text);
   } catch (error) {
-    return res.status(500).send('❌ Error: ' + error.message);
+    res.status(500).send('❌ Error: ' + error.message);
   }
-}
+};
